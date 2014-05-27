@@ -7,7 +7,7 @@ describe('twitter-bot', function() {
     var TwitterBot = require('../index.js');
     var testbot = new TwitterBot();
 
-    describe('#constructor(options)', function() {
+    describe('+constructor(options)', function() {
         it('should return an instance of TwitterBot', function() {            
             (testbot instanceof TwitterBot).should.be.true;            
         })
@@ -93,6 +93,19 @@ describe('twitter-bot', function() {
             testbot.config.log_ignored_tweets.should.be.false;
             testbot.config.dbi_config.tables.api_login.should.equal('test');
           
+        });
+    });
+    
+    describe("+getDB", function() {
+        it('should return current database instance', function() {
+            (testbot.getDB() instanceof DBWrapper).should.be.true;
+        });
+    });
+    
+    
+    describe("+getTwitter", function() {
+        it('should return current twitter instance', function() {
+            (testbot.getTwitter() instanceof Twitter).should.be.true;
         });
     });
     
