@@ -1,5 +1,4 @@
 var should = require("should");
-var libpath = require("./_libpath.js");
 
 var DBWrapper = require('node-dbi').DBWrapper; 
 var Twitter = require('twitter');
