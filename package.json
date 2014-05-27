@@ -1,0 +1,36 @@
+{
+  "name": "twitter-bot",
+  "version": "0.0.1",
+  "description": "A bot for searching twitter and performing actions, supports both Twitter streams and standard polling.",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --reporter spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Pezmc/Twitter-Bot"
+  },
+  "keywords": [
+    "twitter",
+    "bot",
+    "streaming",
+    "api",
+    "polling",
+    "search"
+  ],
+  "author": "Pez Cuckow",
+  "license": "AGPL",
+  "bugs": {
+    "url": "https://github.com/Pezmc/Twitter-Bot/issues"
+  },
+  "homepage": "https://github.com/Pezmc/Twitter-Bot",
+  "devDependencies": {
+    "mocha": "^1.19.0",
+    "should": "^3.3.2"
+  },
+  "dependencies": {
+    "node-dbi": "^0.7.1",
+    "sqlite3": "^2.2.3",
+    "twitter": "^0.2.9"
+  }
+}
