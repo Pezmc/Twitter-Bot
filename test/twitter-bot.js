@@ -3,16 +3,72 @@ var should = require("should");
 var DBWrapper = require('node-dbi').DBWrapper; 
 var Twitter = require('twitter');
 
+var request = require('supertest'); 
+  
+function MockTwitter() {        
+    this.gatekeeper = function(options) {
+        return function(req, res, next) {
+            if(typeof next !== 'undefined') {
+                return next(); // skip to next
+                
+            }
+        }
+    }
+    this.login = function() {
+        this.options = {};
+        this.options.access_token_key = "key";
+        this.options.access_token_secret = "secret";
+        return function(req, res, next) {
+            if(typeof next !== 'undefined') 
+                return next(); // skip to next
+        } 
+    }
+}
+
+function MockResponse() {
+    this.send = function() {};
+}
+
+function MockServer(next) {
+    this.close = function(){};
+    setTimeout(function(){
+      next(null, new MockResponse())
+    }, 1);
+}
+
+function MockExpress() {
+    var _next;
+    this.get = function(path, callback, next) {
+        callback();
+        if(typeof next !== 'undefined') {
+            _next = next;
+        }
+    }
+    
+    this.listen = function() {
+        return new MockServer(_next);
+    }
+}
+
+function forEachKey(object) {
+    for(key in object)
+        if(object.hasOwnProperty(key))
+            callback(key);
+}
+
 describe('twitter-bot', function() {
     var TwitterBot = require('../index.js');
-    var testbot = new TwitterBot({
-                dbi_config: {
-                    type: 'sqlite3',
-                    params: {
-                        path: ':memory:'
-                    }
-                }
-    });
+    
+    var defaultTwitterConfig = {
+        dbi_config: {
+          type: 'sqlite3',
+          params: {
+              path: ':memory:'
+          }
+        }
+    }
+    
+    var testbot = new TwitterBot(defaultTwitterConfig);
 
     describe('+constructor(options)', function() {
         it('should return an instance of TwitterBot', function() {            
@@ -47,17 +103,9 @@ describe('twitter-bot', function() {
         });
         
         it('should pass dbi config to the dbi clas', function() {
-            var configbot = new TwitterBot({
-                dbi_config: {
-                    type: 'sqlite3',
-                    params: {
-                        path: ':memory:'
-                    }
-                }
-            })
-            
-            configbot.config.dbi_config.type.should.equal('sqlite3');
-            configbot.config.dbi_config.params.path.should.equal(':memory:');
+    
+            testbot.config.dbi_config.type.should.equal('sqlite3');
+            testbot.config.dbi_config.params.path.should.equal(':memory:');
           
         });
         
@@ -68,19 +116,20 @@ describe('twitter-bot', function() {
         
             var dependencybot = new TwitterBot({
                 dbi: new TestClass('test'),
-                twitter: new TestClass('test2')
+                twitter: new TestClass('test2'),
+                express: new TestClass('test3')
             });
             
             (dependencybot.config.twitter instanceof TestClass).should.be.true;
             (dependencybot.config.dbi instanceof TestClass).should.be.true;
+            (dependencybot.config.express instanceof TestClass).should.be.true;
             
             var twit = new Twitter({ consumer_key: 'test-key' });
             dependencybot = new TwitterBot({
                 twitter: twit
             });
             dependencybot.config.twitter.options.consumer_key.should.equal('test-key');
-            (dependencybot.config.twitter instanceof Twitter).should.be.true;
-            
+            (dependencybot.config.twitter instanceof Twitter).should.be.true;            
             
         });
         
@@ -120,12 +169,6 @@ describe('twitter-bot', function() {
         return testbot.config.dbi_config.tables;
     }
 
-    function forEachKey(object) {
-        for(key in object)
-            if(object.hasOwnProperty(key))
-                callback(key);
-    }
-
     describe("+getTableName", function() {
         it('should return the current table name for the passed table', function() {
             var tables = getDatabaseTables();
@@ -134,11 +177,20 @@ describe('twitter-bot', function() {
             });
         });
     });
+    
+
 
     describe("+start", function() {
         it('should create empty tables', function(done) {
-            testbot.start(function() {
-                testbot.getDB().fetchAll('SELECT name FROM sqlite_master WHERE type = "table"', function(err, results) {
+        
+            var mockconfig = JSON.parse(JSON.stringify(defaultTwitterConfig));
+            mockconfig.twitter = new MockTwitter();
+            mockconfig.express = new MockExpress();
+            
+            var mockbot = new TwitterBot(mockconfig);
+        
+            mockbot.start(function() {
+                mockbot.getDB().fetchAll('SELECT name FROM sqlite_master WHERE type = "table"', function(err, results) {
                     (err === null).should.be.true;
                     
                     var tables = getDatabaseTables();
@@ -149,6 +201,24 @@ describe('twitter-bot', function() {
                     done();
                 });
             });
+        });
+        
+        it('should require and wait for authentication', function(done) {
+          
+            var mocktwitterconfig = JSON.parse(JSON.stringify(defaultTwitterConfig));
+            mocktwitterconfig.twitter = new MockTwitter();
+            
+            var mocktwitterbot = new TwitterBot(mocktwitterconfig)
+            
+            mocktwitterbot.start();   
+            
+            setTimeout(function() {
+                request(mocktwitterbot.config.express)
+                      .get('/')
+                      .expect(200)
+                      .end(done);  
+            }, 10);
+            
         });
     });
     
