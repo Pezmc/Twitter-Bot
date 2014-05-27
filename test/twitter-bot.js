@@ -5,7 +5,10 @@ var Twitter = require('twitter');
 
 var request = require('supertest'); 
   
-function MockTwitter() {        
+function MockTwitter() {  
+    var key = "key";
+    var secret = "secret";
+    this.options = {};      
     this.gatekeeper = function(options) {
         return function(req, res, next) {
             if(typeof next !== 'undefined') {
@@ -15,9 +18,8 @@ function MockTwitter() {
         }
     }
     this.login = function() {
-        this.options = {};
-        this.options.access_token_key = "key";
-        this.options.access_token_secret = "secret";
+        this.options.access_token_key = key;
+        this.options.access_token_secret = secret;
         return function(req, res, next) {
             if(typeof next !== 'undefined') 
                 return next(); // skip to next
@@ -178,15 +180,13 @@ describe('twitter-bot', function() {
         });
     });
     
-
+    var mockconfig = JSON.parse(JSON.stringify(defaultTwitterConfig));
+    mockconfig.twitter = new MockTwitter();
+    mockconfig.express = new MockExpress();
 
     describe("+start", function() {
         it('should create empty tables', function(done) {
-        
-            var mockconfig = JSON.parse(JSON.stringify(defaultTwitterConfig));
-            mockconfig.twitter = new MockTwitter();
-            mockconfig.express = new MockExpress();
-            
+               
             var mockbot = new TwitterBot(mockconfig);
         
             mockbot.start(function() {
@@ -219,6 +219,17 @@ describe('twitter-bot', function() {
                       .end(done);  
             }, 10);
             
+        });
+        
+        it('should pass authentication keys to the twitter object', function(done) {
+          
+            var mockbot = new TwitterBot(mockconfig);
+            
+            mockbot.start(function() {
+                mockbot.getTwitter().options.access_token_key.should.equal('key');
+                mockbot.getTwitter().options.access_token_secret.should.equal('secret');
+                done();
+            });
         });
     });
     
