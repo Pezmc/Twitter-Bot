@@ -5,7 +5,14 @@ var Twitter = require('twitter');
 
 describe('twitter-bot', function() {
     var TwitterBot = require('../index.js');
-    var testbot = new TwitterBot();
+    var testbot = new TwitterBot({
+                dbi_config: {
+                    type: 'sqlite3',
+                    params: {
+                        path: ':memory:'
+                    }
+                }
+    });
 
     describe('+constructor(options)', function() {
         it('should return an instance of TwitterBot', function() {            
@@ -78,7 +85,7 @@ describe('twitter-bot', function() {
         });
         
         it('should merge provided options with the defaults', function() {
-            testbot = new TwitterBot({
+            var testbot = new TwitterBot({
                 search_terms: ['test'], // special case
                 log_ignored_tweets: false,
                 dbi_config: {
@@ -106,6 +113,42 @@ describe('twitter-bot', function() {
     describe("+getTwitter", function() {
         it('should return current twitter instance', function() {
             (testbot.getTwitter() instanceof Twitter).should.be.true;
+        });
+    });
+    
+    function getDatabaseTables() {
+        return testbot.config.dbi_config.tables;
+    }
+
+    function forEachKey(object) {
+        for(key in object)
+            if(object.hasOwnProperty(key))
+                callback(key);
+    }
+
+    describe("+getTableName", function() {
+        it('should return the current table name for the passed table', function() {
+            var tables = getDatabaseTables();
+            forEachKey(function(key) {
+                testbot.getTableName(key).should.equal(tables[key]); 
+            });
+        });
+    });
+
+    describe("+start", function() {
+        it('should create empty tables', function(done) {
+            testbot.start(function() {
+                testbot.getDB().fetchAll('SELECT name FROM sqlite_master WHERE type = "table"', function(err, results) {
+                    (err === null).should.be.true;
+                    
+                    var tables = getDatabaseTables();
+                    forEachKey(function(key) {
+                        results.should.containEql({ name: tables[key] });
+                    });
+                    
+                    done();
+                });
+            });
         });
     });
     
