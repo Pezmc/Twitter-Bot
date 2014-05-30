@@ -51,6 +51,20 @@ describe('merge', function() {
             (merge.clone(original) == null).should.be.true;
         });
         
+
+        it('should prevent changes to the original object affecting the copy', function() {
+            var original = { a: "a", b: "b" };
+            var output = merge.clone(original);
+            original = { b: "c" }
+            output.should.not.equal(original);
+            
+            original = { a: "a", b: { c: "c" } }
+            output = merge.clone(original);
+            original.c = "d";
+            output.should.not.equal(original);
+        });
+                    
+
         it('should copy the passed array', function() {
             var original = [ "a", "b", "c" ];
             merge.clone(original).should.eql(original);
