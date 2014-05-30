@@ -4,7 +4,9 @@
   "description": "A bot for searching twitter and performing actions, supports both Twitter streams and standard polling.",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --reporter spec"
+    "test": "mocha --reporter spec",
+    "coverage": "rm -rf lib-cov && jscoverage lib lib-cov && TWITTER_BOT_COV=1 mocha -R html-cov > coverage.html && open coverage.html",
+    "overalls": "rm -rf lib-cov && jscoverage lib lib-cov && TWITTER_BOT_COV=1 node_modules/.bin/mocha -R mocha-lcov-reporter | sed 's,SF:,SF:lib/,' | ./node_modules/coveralls/bin/coveralls.js"
   },
   "repository": {
     "type": "git",
@@ -25,7 +27,9 @@
   },
   "homepage": "https://github.com/Pezmc/Twitter-Bot",
   "devDependencies": {
+    "coveralls": "^2.10.0",
     "mocha": "^1.19.0",
+    "mocha-lcov-reporter": "0.0.1",
     "should": "^3.3.2"
   },
   "dependencies": {
