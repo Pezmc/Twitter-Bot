@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/Pezmc/Twitter-Bot.svg?branch=master)](https://travis-ci.org/Pezmc/Twitter-Bot)
+[![Coverage Status](https://coveralls.io/repos/Pezmc/Twitter-Bot/badge.png)](https://coveralls.io/r/Pezmc/Twitter-Bot)
 
 Twitter-Bot
 ===========
