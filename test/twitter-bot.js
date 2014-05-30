@@ -231,6 +231,19 @@ describe('twitter-bot', function() {
                 done();
             });
         });
+        
+        it('should return an instance of the event emitter with \'on\' defined', function(done) {
+            
+            var mockbot = new TwitterBot(mockconfig);
+            mockbot.start(function(emitter) {
+                emitter.constructor.name.should.equal('EventEmitter');
+                emitter.on.should.be.type('function');
+                emitter.emit.should.be.type('function');
+                done();
+            });
+
+            
+        });
     });
     
     /*describe('+start()', function() {
