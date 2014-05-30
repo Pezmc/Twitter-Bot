@@ -1,4 +1,3 @@
-// To enablecoverage testing set the environment variable TWITTER_BOT_COV = 1 
-var libPath = process.env['TWITTER_BOT_COV'] ? './lib-cov' : './lib';
+var libPath = require('./lib/_libPath.js');
 
 module.exports = require(libPath + '/twitter-bot');
