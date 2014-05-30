@@ -8,11 +8,17 @@ A twitter bot module for node.js, this is a work in process.
 The key objective is to wrap the twitter search and user polling and streaming API with an event driven system for simplictic bot building.
 
 ####For example
-`TwitterBot.on('NewTweetSeen', function(tweet) {
-  console.log(tweet);
-  TwitterBot.sendReply(tweet, 'Hi there, nice to meet you.');
-});
 
-TwitterBot.on('OldTweetSeen', function(tweet) {
-  console.log(tweet);
-})
+```javascript
+var searchTerms = ["node.js", "#nodejs"];
+TwitterBot.start(searchTerms, function() {
+  TwitterBot.on('NewTweetSeen', function(tweet) {
+    console.log(tweet);
+    TwitterBot.sendReply(tweet, 'Hi there, nice to meet you.');
+  });
+  
+  TwitterBot.on('OldTweetSeen', function(tweet) {
+    console.log(tweet);
+  });
+});
+```
