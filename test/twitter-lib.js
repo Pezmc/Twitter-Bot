@@ -3,7 +3,35 @@ var tweetLib = require('../' + libPath + '/tweet-lib');
 
 describe('tweet-lib', function() {
 
-    describe('+tweetMatchesArray', function() {});
+    describe('+tweetMatchesArray', function() {
+        it('should match a tweets text to a simple array', function() {
+            var tweet = { text: "This is a test" }
+            tweetLib.tweetMatchesArray(tweet, [ 'test' ]).should.be.true;
+            tweetLib.tweetMatchesArray(tweet, [ 'invalid' ]).should.be.false;
+        });
+        
+        it('should match a tweets text to a complex array', function() {
+            var tweet = { text: "It is going to rain today?" }
+            var match = [ [ 'rain', 'rainy' ], 'today' ]
+            tweetLib.tweetMatchesArray(tweet, match).should.be.true;
+            
+            tweet.text = "Is it going to be sunny today?";
+            tweetLib.tweetMatchesArray(tweet, match).should.be.false;
+        }); 
+        
+        it('should match a tweets text to a nested array', function() {
+            var tweet = { text: "It is going to rain today?" }
+            var match = [ [ [ 'rain', 'rainy' ], [ 'sun', 'sunny' ] ], 'today' ];
+            tweetLib.tweetMatchesArray(tweet, match).should.be.true;
+            
+            tweet.text = "Is it going to be sunny today?";
+            tweetLib.tweetMatchesArray(tweet, match).should.be.true;
+            
+            tweet.text = "Is it going to be stormy today?";
+            tweetLib.tweetMatchesArray(tweet, match).should.be.false;
+        });        
+       
+    });
     
     describe('+arrayToTwitterParams', function() {
     
@@ -11,6 +39,7 @@ describe('tweet-lib', function() {
             var input = ["twitter", "bot", "#node.js"];
             tweetLib.arrayToTwitterParams(input).should.containDeep(["twitter bot #node.js"]);
         });
+        
         it('should merge each term together for and\'s', function() {
             var input = [
                 ['#node', '#node.js'],
@@ -18,6 +47,7 @@ describe('tweet-lib', function() {
             var expected = ["#node #twitter-bot #test", "#node.js #twitter-bot #test"];
             tweetLib.arrayToTwitterParams(input).should.containDeep(expected);
         });
+        
         it('should return all possible combinations of or\'s', function() {
             var input = [
                 ['sun', 'sunny', 'warm'],
@@ -31,6 +61,7 @@ describe('tweet-lib', function() {
             output.should.containDeep(expected);
             output.length.should.equal(expected.length);
         });
+        
         it('should handle nested arrays of or\'s', function() {
             var input = [
                 [
