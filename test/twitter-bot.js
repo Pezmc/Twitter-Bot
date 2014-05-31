@@ -26,6 +26,16 @@ function MockTwitter() {
                 return next(); // skip to next
         } 
     }
+    
+    this.stream = function(type, params, callback) {
+        callback(new MockEventEmitter());
+    }
+
+}
+
+function MockEventEmitter() {
+    this.on = function() {};
+    this.emit = function() {};
 }
 
 function MockResponse() {
@@ -248,41 +258,11 @@ describe('twitter-bot', function() {
     });
     
     describe('+getTrackedList()', function() {
+        var mockbot = new TwitterBot(mockconfig);
+    
         it('should return an array of the tracked terms suitable for use with streaming', function() {
-            var mockbot = new TwitterBot(mockconfig);
-            
             mockbot.config.search_terms = [ "twitter", "bot", "#node.js" ];
-            mockbot.getTrackedList().should.containDeep([ "twitter bot #node.js" ]);           
-        });
-        
-        it('should merge each term together for and\'s', function() {
-            var mockbot = new TwitterBot(mockconfig);
-                       
-            var input = [
-                          [
-                            '#node', '#node.js'
-                          ],
-                          [
-                            '#twitter-bot'
-                          ],
-                          '#test'
-                        ];           
-            
-            mockbot.config.search_terms = input;
-            mockbot.getTrackedList().should.containDeep([ "#node #twitter-bot #test", "#node.js #twitter-bot #test" ]);                  
-        });
-        
-        it('should return all possible combinations of or\'s', function() {          
-            var mockbot = new TwitterBot(mockconfig);
-            
-            var input = [['sun', 'sunny', 'warm'], ['weather', 'sky', 'here']];
-            var expected = ['sun weather', 'sunny weather', 'warm weather',
-                            'sun sky', 'sunny sky', 'warm sky',
-                            'sun here', 'sunny here', 'warm here']; 
-            mockbot.config.search_terms = input;
-            mockbot.getTrackedList().should.containDeep(expected);
-            mockbot.getTrackedList().length.should.equal(expected.length);
-          
+            mockbot.getTrackedList().should.containDeep([ "twitter bot #node.js" ]);
         });
     });
     
