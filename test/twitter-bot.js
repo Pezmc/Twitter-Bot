@@ -1,9 +1,10 @@
 var should = require("should");
+var request = require('supertest'); 
+
+var Merge = require("../lib/merge.js");
 
 var DBWrapper = require('node-dbi').DBWrapper; 
 var Twitter = require('twitter');
-
-var request = require('supertest'); 
   
 function MockTwitter() {  
     var key = "key";
@@ -180,7 +181,7 @@ describe('twitter-bot', function() {
         });
     });
     
-    var mockconfig = JSON.parse(JSON.stringify(defaultTwitterConfig));
+    var mockconfig = Merge.clone(defaultTwitterConfig);
     mockconfig.twitter = new MockTwitter();
     mockconfig.express = new MockExpress();
 
