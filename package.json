@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha --reporter spec",
-    "coverage": "rm -rf lib-cov && ./node_modules/jscoverage/bin/jscoverage lib lib-cov && TWITTER_BOT_COV=1 mocha -R html-cov > coverage.html && open coverage.html",
-    "coveralls": "rm -rf lib-cov && ./node_modules/jscoverage/bin/jscoverage lib lib-cov && TWITTER_BOT_COV=1 node_modules/.bin/mocha -R mocha-lcov-reporter | sed 's,SF:,SF:lib/,' | ./node_modules/coveralls/bin/coveralls.js",
-    "codeclimate": "export CODECLIMATE_REPO_TOKEN=cb11de025c8df27bb28527df703bb3cf04ac6dd12df48511c78a08a2e35fdc70 && rm -rf lib-cov && ./node_modules/jscoverage/bin/jscoverage lib lib-cov && TWITTER_BOT_COV=1 node_modules/.bin/mocha -R mocha-lcov-reporter | sed 's,SF:,SF:lib/,' | ./node_modules/codeclimate-test-reporter/bin/codeclimate.js"
+    "coverage": "make coverage.html",
+    "coveralls": "make coveralls",
+    "codeclimate": "make codeclimate"
   },
   "repository": {
     "type": "git",
