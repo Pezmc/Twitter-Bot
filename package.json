@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha --reporter spec",
-    "coverage": "rm -rf lib-cov && jscoverage lib lib-cov && TWITTER_BOT_COV=1 mocha -R html-cov > coverage.html && open coverage.html",
-    "coveralls": "rm -rf lib-cov && jscoverage lib lib-cov && TWITTER_BOT_COV=1 node_modules/.bin/mocha -R mocha-lcov-reporter | sed 's,SF:,SF:lib/,' | ./node_modules/coveralls/bin/coveralls.js",
-    "codeclimate": "export CODECLIMATE_REPO_TOKEN=cb11de025c8df27bb28527df703bb3cf04ac6dd12df48511c78a08a2e35fdc70 && rm -rf lib-cov && jscoverage lib lib-cov && TWITTER_BOT_COV=1 node_modules/.bin/mocha -R mocha-lcov-reporter | sed 's,SF:,SF:lib/,' | ./node_modules/codeclimate-test-reporter/bin/codeclimate.js"
+    "coverage": "rm -rf lib-cov && ./node_modules/jscoverage/bin/jscoverage lib lib-cov && TWITTER_BOT_COV=1 mocha -R html-cov > coverage.html && open coverage.html",
+    "coveralls": "rm -rf lib-cov && ./node_modules/jscoverage/bin/jscoverage lib lib-cov && TWITTER_BOT_COV=1 node_modules/.bin/mocha -R mocha-lcov-reporter | sed 's,SF:,SF:lib/,' | ./node_modules/coveralls/bin/coveralls.js",
+    "codeclimate": "export CODECLIMATE_REPO_TOKEN=cb11de025c8df27bb28527df703bb3cf04ac6dd12df48511c78a08a2e35fdc70 && rm -rf lib-cov && ./node_modules/jscoverage/bin/jscoverage lib lib-cov && TWITTER_BOT_COV=1 node_modules/.bin/mocha -R mocha-lcov-reporter | sed 's,SF:,SF:lib/,' | ./node_modules/codeclimate-test-reporter/bin/codeclimate.js"
   },
   "repository": {
     "type": "git",
@@ -30,6 +30,7 @@
   "devDependencies": {
     "codeclimate-test-reporter": "0.0.3",
     "coveralls": "^2.10.0",
+    "jscoverage": "^0.5.3",
     "mocha": "^1.19.0",
     "mocha-lcov-reporter": "0.0.1",
     "should": "^3.3.2"
