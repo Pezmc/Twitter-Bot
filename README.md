@@ -1,6 +1,7 @@
 [![Build Status](https://travis-ci.org/Pezmc/Twitter-Bot.svg?branch=master)](https://travis-ci.org/Pezmc/Twitter-Bot)
 [![Coverage Status](https://coveralls.io/repos/Pezmc/Twitter-Bot/badge.png)](https://coveralls.io/r/Pezmc/Twitter-Bot)
 [![Code Climate](https://codeclimate.com/github/Pezmc/Twitter-Bot.png)](https://codeclimate.com/github/Pezmc/Twitter-Bot)
+[![Dependency Status](https://gemnasium.com/Pezmc/Twitter-Bot.svg)](https://gemnasium.com/Pezmc/Twitter-Bot)
 
 Twitter-Bot
 ===========
