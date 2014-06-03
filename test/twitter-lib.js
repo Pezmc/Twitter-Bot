@@ -30,6 +30,18 @@ describe('tweet-lib', function() {
             tweet.text = "Is it going to be stormy today?";
             tweetLib.tweetMatchesArray(tweet, match).should.be.false;
         });        
+
+        it('should ignore mentions (@keyword) if speficied', function() {
+            var tweet = { text: "@brain How's the weather?" }
+            var match = [ [ [ 'rain', 'rainy' ] ], 'weather' ];
+            tweetLib.tweetMatchesArray(tweet, match, true).should.be.false;
+            
+            tweet.text = "@brain Is the weather rainy?";
+            tweetLib.tweetMatchesArray(tweet, match, true).should.be.true;
+            
+            tweet.text = "How is the @weather is it rainy?";
+            tweetLib.tweetMatchesArray(tweet, match, true).should.be.false;
+        }); 
        
     });
     
